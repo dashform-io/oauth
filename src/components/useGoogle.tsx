@@ -43,61 +43,33 @@ HookProps) => {
         client_id: clientId,
         callback: handleCredentialResponse,
       });
-      // google.accounts.id.renderButton(
-      //   document.getElementById('buttonDiv') as HTMLElement,
-      //   {
-      //     theme: 'outline',
-      //     size: 'large',
-      //     type: 'standard',
-      //   } // customization attributes
-      // );
-      google.accounts.id.prompt(); // also display the One Tap dialog
+      google.accounts.id.renderButton(
+        document.getElementById('buttonDiv') as HTMLElement,
+        {
+          theme: 'outline',
+          size: 'large',
+          type: 'standard',
+          width: '400px',
+        } // customization attributes
+      );
+      // google.accounts.id.prompt(); // also display the One Tap dialog
     };
     return () => {
       document.body.removeChild(script);
     };
   }, []);
 
-  function login() {
-    var oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
-
-    var form = document.createElement('form');
-    form.setAttribute('method', 'GET'); // Send as a GET request.
-    form.setAttribute('action', oauth2Endpoint);
-
-    // Parameters to pass to OAuth 2.0 endpoint.
-    var params: any = {
-      client_id: clientId,
-      redirect_uri: 'http://localhost:3001',
-      response_type: 'token',
-      scope: 'http://localhost:3001',
-      include_granted_scopes: 'true',
-      state: 'pass-through value',
-    };
-
-    // Add form parameters as hidden input values.
-    for (var p in params) {
-      var input = document.createElement('input');
-      input.setAttribute('type', 'hidden');
-      input.setAttribute('name', p);
-      input.setAttribute('value', params[p]);
-      form.appendChild(input);
-    }
-
-    // Add form to page and submit it to open the OAuth 2.0 endpoint.
-    document.body.appendChild(form);
-    form.submit();
-  }
-
   function handleCredentialResponse(response: any) {
-    console.log('Encoded JWT ID token: ' + response.credential);
     userContext.login(response.credential);
-    console.log(userContext);
     document.cookie = `jwt=${response.credential}`;
     onSuccess(response);
   }
 
-  return { login, user, loading };
+  const login = () => {
+    google.accounts.id.prompt();
+  };
+
+  return { login, loading };
 };
 
 export default useGoogle;

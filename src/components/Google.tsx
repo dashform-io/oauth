@@ -8,11 +8,11 @@ interface GoogleProps {
 }
 
 const Google = ({ clientId, onSuccess }: GoogleProps) => {
-  const { user } = useGoogle({ clientId, onSuccess });
+  const { login } = useGoogle({ clientId, onSuccess });
 
   return (
     <>
-      <button id="buttonDiv">login</button>
+      <button onClick={login}>login</button>
     </>
   );
 };
