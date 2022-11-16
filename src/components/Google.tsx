@@ -1,19 +1,20 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import useGoogle from './useGoogle';
+// import useGoogle from './useGoogle';
 
 interface GoogleProps {
   clientId: string;
+  onSuccess: (res: any) => void;
 }
 
-const Google = ({ clientId }: GoogleProps) => {
-  const googleHook = useGoogle();
+const Google = ({ clientId, onSuccess }: GoogleProps) => {
+  const { user } = useGoogle({ clientId, onSuccess });
 
-  useEffect(() => {
-    console.log(clientId);
-    console.log(googleHook);
-  });
-
-  return <button>Sign In with Google</button>;
+  return (
+    <>
+      <button id="buttonDiv">login</button>
+    </>
+  );
 };
 
 export default Google;
