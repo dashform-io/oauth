@@ -46,10 +46,10 @@ HookProps) => {
       google.accounts.id.renderButton(
         document.getElementById('buttonDiv') as HTMLElement,
         {
-          theme: 'outline',
+          theme: 'filled_black',
           size: 'large',
           type: 'standard',
-          width: '400px',
+          width: '300px',
         } // customization attributes
       );
       // google.accounts.id.prompt(); // also display the One Tap dialog
