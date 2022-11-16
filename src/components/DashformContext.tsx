@@ -15,9 +15,9 @@ export interface UserObject {
   loggedIn: boolean;
 }
 
-export const UserContext = React.createContext<UserObject | null>(null);
+export const DashformContext = React.createContext<UserObject | null>(null);
 
-export const UserProvider = ({ children }: any) => {
+export const DashformProvider = ({ children }: any) => {
   const login = (jwt: string) => {
     document.cookie = `jwt=${jwt}`;
     setLoggedIn(true);
@@ -27,7 +27,7 @@ export const UserProvider = ({ children }: any) => {
   const logout = () => {
     setUser('');
     document.cookie = 'jwt=';
-    document.location.href = 'http://localhost:3000';
+    document.location.href = 'http://localhost:3001';
   };
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState('');
@@ -44,16 +44,16 @@ export const UserProvider = ({ children }: any) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, loggedIn, login, logout }}>
+    <DashformContext.Provider value={{ user, loggedIn, login, logout }}>
       {children}
-    </UserContext.Provider>
+    </DashformContext.Provider>
   );
 };
 
 export const useAuth = () => {
-  const context = React.useContext(UserContext);
+  const context = React.useContext(DashformContext);
   if (context === null) {
-    throw new Error('useAuth must be used within a UserProvider');
+    throw new Error('useAuth must be used within a DashformProvider');
   }
   return context;
 };

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from './UserContext';
+import { useAuth } from './DashformContext';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
 
@@ -7,27 +7,15 @@ import axios from 'axios';
 
 interface HookProps {
   clientId: string;
-  onFailure: (err: any) => void;
-  onSuccess: (res: any) => void;
-  // onRequest: () => void;
-  //   responseType: string;
-  //   prompt: gapi.auth2.OfflineAccessOptions;
-  //   accessType: string;
-  //   apiKey: string;
+  onFailure?: (err: any) => void;
+  onSuccess?: (res: any) => void;
 }
 
 const useGoogle = ({
   clientId,
-  onFailure,
-  onSuccess,
-}: //   onFailure = (err: any) => {},
-//   onSuccess = () => {},
-//   onRequest = () => {},
-//   responseType,
-//   prompt,
-//   accessType,
-//   apiKey,
-HookProps) => {
+  onFailure = () => {},
+  onSuccess = () => {},
+}: HookProps) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<any>();
   const userContext = useAuth();
@@ -110,13 +98,15 @@ HookProps) => {
           !popup.location.hostname.includes('accounts.google.com') &&
           popup.location.hostname !== ''
         ) {
-          if (popup.location.search) {
-            const query = new URLSearchParams(popup.location.search);
+          console.log(popup.location.hash);
+          if (popup.location.hash) {
+            const query = new URLSearchParams(popup.location.hash);
 
-            const code = query.get('code');
+            const token = query.get('id_token');
 
             closeDialog();
-            return getOauthToken(code!);
+            userContext.login(token!);
+            return onSuccess(token!);
           } else {
             closeDialog();
             return onFailure(
@@ -133,27 +123,6 @@ HookProps) => {
         // A hack to get around same-origin security policy errors in IE.
       }
     }, 500);
-  };
-
-  const getOauthToken = async (code: string) => {
-    try {
-      const res = await fetch(`https://oauth2.googleapis.com/token`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          code,
-          client_id:
-            '917460552947-9ouhuaqmj487vls7bti3kh2ka5p9beeu.apps.googleusercontent.com',
-          redirect_uri: 'http://localhost:3000/dashboard',
-          grant_type: 'authorization_code',
-        }),
-      });
-      const data = await res.json();
-      userContext.login(data.id_token);
-      onSuccess(data);
-    } catch (err) {
-      onFailure(err);
-    }
   };
 
   return { login, loading };

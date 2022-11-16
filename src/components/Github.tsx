@@ -7,7 +7,7 @@ const Github = () => {
         const url = new URL('https://github.com/login/oauth/authorize');
         url.search = new URLSearchParams({
           client_id: 'ce321ad8d86aadbed7d9',
-          redirect_uri: 'http://localhost:3000/dashboard',
+          redirect_uri: 'http://localhost:3001/dashboard',
         }).toString();
         await fetch(url.toString());
       }}

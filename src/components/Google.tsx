@@ -1,41 +1,52 @@
 import React, { useRef } from 'react';
 import useGoogle from './useGoogle';
-// import useGoogle from './useGoogle';
+import { v4 as uuidv4 } from 'uuid';
+import GoogleLogo from '../assets/google.svg';
+import './Google.css';
 
 interface GoogleProps {
   clientId: string;
-  onSuccess: (res: any) => void;
-  className: string;
+  redirectUri: string;
+  onSuccess?: (res: any) => void;
+  className?: string;
+  render?: React.FC;
 }
 
 const onFailure = (res: any) => {
   console.log(res);
 };
 
-const Google = ({ clientId, onSuccess }: GoogleProps) => {
+const Google = ({
+  clientId,
+  redirectUri,
+  onSuccess,
+  className,
+  render,
+}: GoogleProps) => {
   const { login } = useGoogle({ clientId, onSuccess, onFailure });
-  const buttonRef = useRef(null);
+
+  const handleClick = () => {
+    const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+    url.search = new URLSearchParams({
+      client_id: clientId,
+      response_type: 'token id_token',
+      redirect_uri: redirectUri,
+      scope: 'openid email',
+      nonce: uuidv4(),
+    }).toString();
+    login(url.toString());
+  };
+
+  if (render !== undefined) {
+    return render({ onClick: handleClick });
+  }
 
   return (
-    <>
-      <button
-        onClick={async () => {
-          const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
-          url.search = new URLSearchParams({
-            client_id:
-              '917460552947-9ouhuaqmj487vls7bti3kh2ka5p9beeu.apps.googleusercontent.com',
-            response_type: 'code',
-            redirect_uri: 'http://localhost:3000/dashboard',
-            scope: 'openid email',
-          }).toString();
-          login(
-            'https://accounts.google.com/o/oauth2/v2/auth?client_id=917460552947-9ouhuaqmj487vls7bti3kh2ka5p9beeu.apps.googleusercontent.com&response_type=code&scope=openid email&redirect_uri=http://localhost:3000/dashboard'
-          );
-        }}
-      >
-        Login with Google
-      </button>
-    </>
+    <button id="googleButton" onClick={handleClick} className={className}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <img src={GoogleLogo} /> Sign in with Google
+      </div>
+    </button>
   );
 };
 
