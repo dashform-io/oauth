@@ -8,7 +8,7 @@ const login = (jwt: string) => {
   document.cookie = `jwt=${jwt}`;
 };
 
-interface UserObject {
+export interface UserObject {
   user: string;
   logout: () => void;
   login: (jwt: string) => void;
@@ -27,7 +27,7 @@ export const UserProvider = ({ children }: any) => {
   const logout = () => {
     setUser('');
     document.cookie = 'jwt=';
-    document.location.href = 'http://localhost:3001';
+    document.location.href = 'http://localhost:3000';
   };
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState('');

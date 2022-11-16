@@ -16,7 +16,7 @@ interface HookProps {
   //   apiKey: string;
 }
 
-const useGoogle = ({
+const useGithub = ({
   clientId,
   onFailure,
   onSuccess,
@@ -74,8 +74,8 @@ HookProps) => {
   };
 
   const openPopup = () => {
-    const w = 500;
-    const h = 700;
+    const w = 400;
+    const h = 600;
     const left = screen.width / 2 - w / 2;
     const top = screen.height / 2 - h / 2;
 
@@ -159,4 +159,4 @@ HookProps) => {
   return { login, loading };
 };
 
-export default useGoogle;
+export default useGithub;
