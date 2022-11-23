@@ -31,7 +31,7 @@ const Google = ({
       client_id: clientId,
       response_type: 'token id_token',
       redirect_uri: redirectUri,
-      scope: 'openid email',
+      scope: 'openid email profile',
       nonce: uuidv4(),
     }).toString();
     login(url.toString());

@@ -137,7 +137,7 @@ HookProps) => {
 
   const getOauthToken = async (code: string) => {
     try {
-      const res = await fetch(`https://oauth2.googleapis.com/token`, {
+      const res = await fetch(`ce321ad8d86aadbed7d9`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

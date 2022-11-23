@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import jwt from 'jsonwebtoken';
+import axios from 'axios';
 
 const logout = () => {
   document.cookie = 'jwt=';
@@ -8,8 +10,12 @@ const login = (jwt: string) => {
   document.cookie = `jwt=${jwt}`;
 };
 
+interface UserData {
+  id: number;
+}
+
 export interface UserObject {
-  user: string;
+  user: UserData;
   logout: () => void;
   login: (jwt: string) => void;
   loggedIn: boolean;
@@ -18,20 +24,29 @@ export interface UserObject {
 export const DashformContext = React.createContext<UserObject | null>(null);
 
 export const DashformProvider = ({ children }: any) => {
-  const login = (jwt: string) => {
-    document.cookie = `jwt=${jwt}`;
+  const login = async (token: string) => {
+    console.log(token);
+    document.cookie = `jwt=${token}`;
     setLoggedIn(true);
-    setUser(jwt);
+    const decoded = jwt.decode(token, { complete: true })
+      ?.payload as jwt.JwtPayload;
+    console.log(decoded);
+    const newUser = await axios.post('http://localhost:9876/users', {
+      username: decoded!.name,
+      email: decoded!.email,
+    });
+    setUser(newUser);
   };
 
   const logout = () => {
     setUser('');
     document.cookie = 'jwt=';
-    document.location.href = 'http://localhost:3001';
+    document.location.href = document.location.origin;
   };
   const [loggedIn, setLoggedIn] = useState(false);
-  const [user, setUser] = useState('');
+  const [user, setUser] = useState<any>();
   const [value, setValue] = useState({ user, loggedIn, login, logout });
+
   useEffect(() => {
     const jwt = document.cookie
       .split('; ')
